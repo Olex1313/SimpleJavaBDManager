@@ -13,10 +13,6 @@ public class Student extends Human implements Serializable {
         this.groupNumber = groupNumber;
     }
 
-    public Student(String firstName, String lastName, Integer age) {
-        super(firstName, lastName, age);
-    }
-
     public String getSpecialization() {
         return specialization;
     }
@@ -35,11 +31,11 @@ public class Student extends Human implements Serializable {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "Student {" +
                 "firstName='" + this.getFirstName() + '\'' +
                 ", lastName='" + this.getLastName() + '\'' +
                 ", age=" + this.getAge() + '\'' +
-                "specialization='" + specialization + '\'' +
+                ", specialization='" + specialization + '\'' +
                 ", groupNumber=" + groupNumber +
                 '}';
     }
