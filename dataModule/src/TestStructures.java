@@ -3,6 +3,8 @@ import DataClasses.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestStructures {
     public static void main(String[] args) throws FileNotFoundException {
@@ -14,8 +16,10 @@ public class TestStructures {
         System.out.println(student.equals(student2));
         Human student3 = (Human) student2;
         System.out.println(student3);
-        PersonWriter writer = new PersonWriter(new FileOutputStream("text.txt"));
-        writer.writeJSON(student3);
-        writer.writeJSON(human);
+        PersonWriter.writeJSON(student3, "text.txt");
+        PersonWriter.writeJSON(human, "text.json");
+        List<Human> list = new ArrayList<>();
+        list.add(human);
+        PersonWriter.writeJSON(list, "list.json");
     }
 }

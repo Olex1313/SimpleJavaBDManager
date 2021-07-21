@@ -1,30 +1,52 @@
 package DataClasses;
 
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class PersonWriter {
-    private FileOutputStream outputStream;
-
-    public PersonWriter(FileOutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
-    public void writeJSON(Human human) {
-        try
-        {
-            String formedJSON = getJSONString(human);
+    public static void writeJSON(Human human, String filename) {
+        try {
+            String formedJSON = PersonWriter.getJSONString(human);
 
             if (formedJSON == null)
                 throw new NullPointerException();
 
-            this.outputStream.write(formedJSON.getBytes(StandardCharsets.UTF_8));
-        }
-        catch (IOException e) {
+            FileWriter writer = new FileWriter(filename);
+            writer.write(formedJSON);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        catch (NullPointerException e) {
+    }
+
+    public static void writeJSON(List<Human> humans, String filename) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+
+            if (humans.isEmpty()) {
+                writer.write("[]");
+                writer.close();
+                return;
+            }
+            writer.write('[');
+            String tmp = null;
+            for (int i = 0; i < humans.size() - 1; i++) {
+                tmp = PersonWriter.getJSONString(humans.get(i));
+                if (tmp == null)
+                    continue;
+
+                writer.write(tmp + ", ");
+            }
+            tmp = PersonWriter.getJSONString(humans.get(humans.size() - 1));
+            writer.write(tmp + "]");
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -33,19 +55,19 @@ public class PersonWriter {
         if (human instanceof Student) {
             Student student = (Student) human;
             return "{" +
-                    "\"firstName\":" + '"' + student.getFirstName() + '"'  +
+                    "\"firstName\":" + '"' + student.getFirstName() + '"' +
                     ", \"lastName\":" + '"' + student.getLastName() + '"' +
                     ", \"age\":" + '"' + student.getAge() + '"' +
                     ", \"specialization\":" + '"' + student.getSpecialization() + '"' +
                     ", \"groupNumber\":" + '"' + student.getGroupNumber() + '"' +
-                    "}\n";
+                    "}";
         }
         if (human instanceof Human) {
             return "{" +
-                    "\"firstName\":" + '"' + human.getFirstName() + '"'  +
+                    "\"firstName\":" + '"' + human.getFirstName() + '"' +
                     ", \"lastName\":" + '"' + human.getLastName() + '"' +
                     ", \"age\":" + '"' + human.getAge() + '"' +
-                    "}\n";
+                    "}";
         }
         return null;
     }
