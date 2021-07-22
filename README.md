@@ -1,0 +1,2 @@
+# SimpleJavaBDManager
+Simple java serializer
