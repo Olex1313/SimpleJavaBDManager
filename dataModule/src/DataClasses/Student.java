@@ -13,6 +13,12 @@ public class Student extends Human implements Serializable {
         this.groupNumber = groupNumber;
     }
 
+    public Student() {
+        super();
+        this.specialization = null;
+        this.groupNumber = null;
+    }
+
     public String getSpecialization() {
         return specialization;
     }

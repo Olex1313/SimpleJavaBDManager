@@ -14,6 +14,12 @@ public class Human implements Serializable {
         this.age = age;
     }
 
+    public Human() {
+        this.firstName = null;
+        this.lastName = null;
+        this.age = null;
+    }
+
     public String getFirstName() {
         return firstName;
     }
