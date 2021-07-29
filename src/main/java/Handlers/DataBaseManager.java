@@ -1,8 +1,15 @@
 package Handlers;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
+import DataClasses.Human;
+import DataClasses.PersonReader;
+import DataClasses.Student;
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class DataBaseManager {
     private static Connection connection;
@@ -32,6 +39,111 @@ public class DataBaseManager {
 
     public void getJSONTable(String table, String path) {
 
+    }
+
+    public void loadFromJSON(String table, String path) {
+        try {
+            Statement st = connection.createStatement();
+            String operation = "create table " + table +
+                    " ( id BIGSERIAL PRIMARY KEY , first_name VARCHAR (50), last_name VARCHAR(50), specialization VARCHAR(50), group_number INT, age INT)";
+            st.executeUpdate(operation);
+            System.out.println("Table created...");
+            st.close();
+        } catch (SQLException e) {
+            System.out.println("Got SQL error");
+            e.printStackTrace();
+        } catch (JSONException e) {
+            System.out.println("Got JSON error");
+            e.printStackTrace();
+        }
+
+        try {
+            Statement st = connection.createStatement();
+            ArrayList<Human> humans = PersonReader.processJSON(path);
+            for (Human human : humans) {
+                if (human instanceof Student) {
+                    Student student = (Student) human;
+                    String operation = "insert into " +
+                            table +
+                            " (first_name, last_name, specialization, group_number, age)" +
+                            " values ( " +
+                            student.getFirstName() + ", " +
+                            student.getLastName() + ", " +
+                            student.getSpecialization() + ", " +
+                            student.getGroupNumber().toString() + ", " +
+                            student.getAge().toString() +
+                            ");";
+                    st.executeUpdate(operation);
+                } else if (human instanceof Human) {
+                    String operation = "insert into " +
+                            table +
+                            " (first_name, last_name, age)" +
+                            " values ( " +
+                            human.getFirstName() + ", " +
+                            human.getLastName() + ", " +
+                            human.getAge().toString() +
+                            ");";
+                    st.executeUpdate(operation);
+                }
+
+            }
+            st.close();
+        } catch (SQLException e) {
+            System.out.println("No records added");
+            e.printStackTrace();
+        }
+    }
+
+    public void loadFromJSON() {
+        System.out.println("Input table name");
+        String table = getUserInput();
+        System.out.println("Input JSON path");
+        String path = getUserInput();
+        loadFromJSON(table, path);
+    }
+
+    public void printAllRecords(String table) {
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM " + table);
+            while (rs.next()) {
+                System.out.println(rs.getString(1) + ' ' +
+                        rs.getString(2) + ' ' +
+                        rs.getString(3) + ' ' +
+                        rs.getString(4) + ' ' +
+                        rs.getString(5) + ' ');
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void printAllRecords() {
+        System.out.println("Input table name");
+        String table = getUserInput();
+        printAllRecords(table);
+    }
+
+    public boolean isConnected() {
+        return connection != null;
+    }
+
+    public String getUserInput() {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String string = null;
+            while(true) {
+                string = reader.readLine();
+                if (string != null)
+                    return string;
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

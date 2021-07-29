@@ -44,6 +44,11 @@ public class BufferManager {
         System.out.printf("Record removed");
     }
 
+    public void removeRecord() throws IOException {
+        Human human = readRecord();
+        removeRecord(human);
+    }
+
     public void recordBufferToJSON() {
         System.out.println("Input filename of JSON file to save as");
         try {
