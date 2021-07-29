@@ -67,11 +67,11 @@ public class DataBaseManager {
                             table +
                             " (first_name, last_name, specialization, group_number, age)" +
                             " values ( " +
-                            student.getFirstName() + ", " +
-                            student.getLastName() + ", " +
-                            student.getSpecialization() + ", " +
-                            student.getGroupNumber().toString() + ", " +
-                            student.getAge().toString() +
+                            wrapQuotes(student.getFirstName()) + ", " +
+                            wrapQuotes(student.getLastName()) + ", " +
+                            wrapQuotes(student.getSpecialization()) + ", " +
+                            wrapQuotes(student.getGroupNumber().toString()) + ", " +
+                            wrapQuotes(student.getAge().toString()) +
                             ");";
                     st.executeUpdate(operation);
                 } else if (human instanceof Human) {
@@ -79,9 +79,9 @@ public class DataBaseManager {
                             table +
                             " (first_name, last_name, age)" +
                             " values ( " +
-                            human.getFirstName() + ", " +
-                            human.getLastName() + ", " +
-                            human.getAge().toString() +
+                            wrapQuotes(human.getFirstName()) + ", " +
+                            wrapQuotes(human.getLastName()) + ", " +
+                            wrapQuotes(human.getAge().toString()) +
                             ");";
                     st.executeUpdate(operation);
                 }
@@ -107,11 +107,11 @@ public class DataBaseManager {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM " + table);
             while (rs.next()) {
-                System.out.println(rs.getString(1) + ' ' +
-                        rs.getString(2) + ' ' +
+                System.out.println(rs.getString(2) + ' ' +
                         rs.getString(3) + ' ' +
                         rs.getString(4) + ' ' +
-                        rs.getString(5) + ' ');
+                        rs.getString(5) + ' ' +
+                        rs.getString(6) + ' ');
             }
             rs.close();
             st.close();
@@ -144,6 +144,10 @@ public class DataBaseManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String wrapQuotes(String s) {
+        return "'" + s + "'";
     }
 
 }
